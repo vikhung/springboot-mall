@@ -1,27 +1,27 @@
-package tw.com.vik.model;
+package tw.com.vik.dto;
 
-import java.util.Date;
-
+import jakarta.validation.constraints.NotNull;
 import tw.com.vik.constant.ProductCategory;
 
-public class Product
+public class ProductRequest
 {
-	private Integer productId;         
-    private String productName;
-    private ProductCategory category;
-    private String imageUrl;
-    private Integer price;
-    private Integer stock;
-    private String description;
-    private Date createdDate;
-    private Date lastModifiedDate;
+    @NotNull
+	private String productName;
     
-	public Integer getProductId() {
-		return productId;
-	}
-	public void setProductId(Integer productId) {
-		this.productId = productId;
-	}
+    @NotNull
+    private ProductCategory category;
+    
+    @NotNull
+    private String imageUrl;
+    
+    @NotNull
+    private Integer price;
+    
+    @NotNull
+    private Integer stock;
+    
+    private String description;
+    
 	public String getProductName() {
 		return productName;
 	}
@@ -60,18 +60,4 @@ public class Product
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public Date getCreatedDate() {
-		return createdDate;
-	}
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
-	public Date getLastModifiedDate() {
-		return lastModifiedDate;
-	}
-	public void setLastModifiedDate(Date lastModifiedDate) {
-		this.lastModifiedDate = lastModifiedDate;
-	}
-    
-	
 }
