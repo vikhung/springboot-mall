@@ -80,7 +80,7 @@ public class ProductController
         page.setTotal(total);
         page.setResults(productList);
         
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(page);
+        return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 	
 	@PostMapping("/products")
