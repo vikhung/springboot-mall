@@ -2,7 +2,7 @@ package tw.com.vik.service;
 
 import java.util.List;
 
-import tw.com.vik.constant.ProductCategory;
+import tw.com.vik.dto.ProductQueryParams;
 import tw.com.vik.dto.ProductRequest;
 import tw.com.vik.model.Product;
 
@@ -16,6 +16,7 @@ public interface ProductService
 	
 	void deleteProduct(Integer productId);
 	
-	List<Product> getProducts(ProductCategory productCategory, String search);
+	List<Product> getProducts(ProductQueryParams productQueryParams);
 	
+	Integer countProduct(ProductQueryParams productQueryParams);
 }

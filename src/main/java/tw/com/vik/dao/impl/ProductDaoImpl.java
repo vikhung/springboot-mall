@@ -12,8 +12,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
-import tw.com.vik.constant.ProductCategory;
 import tw.com.vik.dao.ProductDao;
+import tw.com.vik.dto.ProductQueryParams;
 import tw.com.vik.dto.ProductRequest;
 import tw.com.vik.model.Product;
 import tw.com.vik.rowmapper.ProductRowMapper;
@@ -106,7 +106,7 @@ public class ProductDaoImpl implements ProductDao
     }
 
     @Override
-    public List<Product> getProducts(ProductCategory productCategory, String search)
+    public List<Product> getProducts(ProductQueryParams productQueryParams)
     {
         String sql = "select product_id, product_name, category, image_url, price, stock, "
                 + "description, created_date, last_modified_date "
@@ -114,21 +114,61 @@ public class ProductDaoImpl implements ProductDao
      
         Map<String, Object> map = new HashMap<String, Object>();
         
-        if(productCategory != null)
-        {
-            sql = sql + " AND category = :category";
-            map.put("category", productCategory.name());
-        }
-        
-        if(search != null)
-        {
-            sql = sql + " AND product_name like :search";
-            map.put("search", "%" + search + "%");
-        }
+        //Where
+        sql = addFiliteringSql(sql, map, productQueryParams);
      
+        //排序(orderBy、sort)
+        sql = sql + " order by " + productQueryParams.getOrderBy() + " " + productQueryParams.getSort();
+        
+        //分頁(limit、offset)
+        sql = sql + " limit :limit offset :offset";
+        map.put("limit", productQueryParams.getLimit());
+        map.put("offset", productQueryParams.getOffset());
+        
+        
         List<Product> productList = namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());
      
         return productList;
+    }
+    
+    @Override
+    public Integer countProduct(ProductQueryParams productQueryParams)
+    {
+        String sql = "select count(*) from product where 1=1";
+        
+        Map<String, Object> map = new HashMap<String, Object>();
+        
+        //Where
+        sql = addFiliteringSql(sql, map, productQueryParams);
+
+        Integer total = namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
+        
+        return total;
+    }
+    
+    /**
+     * 將WHERE條件功能集中於addFilitering()中
+     * 
+     * @param sql
+     * @param map
+     * @param productQueryParams
+     * @return
+     */
+    private String addFiliteringSql(String sql, Map<String, Object> map, ProductQueryParams productQueryParams)
+    {
+        if(productQueryParams.getProductCategory() != null)
+        {
+            sql = sql + " AND category = :category";
+            map.put("category", productQueryParams.getProductCategory().name());
+        }
+        
+        if(productQueryParams.getSearch() != null)
+        {
+            sql = sql + " AND product_name like :search";
+            map.put("search", "%" + productQueryParams.getSearch() + "%");
+        }
+        
+        return sql;
     }
 }
 

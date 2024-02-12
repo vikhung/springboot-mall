@@ -2,7 +2,7 @@ package tw.com.vik.dao;
 
 import java.util.List;
 
-import tw.com.vik.constant.ProductCategory;
+import tw.com.vik.dto.ProductQueryParams;
 import tw.com.vik.dto.ProductRequest;
 import tw.com.vik.model.Product;
 
@@ -16,5 +16,7 @@ public interface ProductDao
 	
 	void deleteProduct(Integer productId);
 	
-	List<Product> getProducts(ProductCategory productCategory, String search);
+	List<Product> getProducts(ProductQueryParams productQueryParams);
+	
+	Integer countProduct(ProductQueryParams productQueryParams);
 }

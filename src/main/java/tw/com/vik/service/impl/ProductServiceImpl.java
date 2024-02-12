@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import tw.com.vik.constant.ProductCategory;
 import tw.com.vik.dao.ProductDao;
+import tw.com.vik.dto.ProductQueryParams;
 import tw.com.vik.dto.ProductRequest;
 import tw.com.vik.model.Product;
 import tw.com.vik.service.ProductService;
@@ -41,10 +41,14 @@ public class ProductServiceImpl implements ProductService
     }
 
     @Override
-    public List<Product> getProducts(ProductCategory productCategory, String search)
+    public List<Product> getProducts(ProductQueryParams productQueryParams)
     {
-        return productDao.getProducts(productCategory, search);
+        return productDao.getProducts(productQueryParams);
     }
     
-    
+    @Override
+    public Integer countProduct(ProductQueryParams productQueryParams)
+    {
+        return productDao.countProduct(productQueryParams);
+    }
 }
