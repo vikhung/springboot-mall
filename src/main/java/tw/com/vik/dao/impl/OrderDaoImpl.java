@@ -13,10 +13,14 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import tw.com.vik.dao.OrderDao;
+import tw.com.vik.dto.OrderQueryParams;
+import tw.com.vik.dto.ProductQueryParams;
 import tw.com.vik.model.Order;
 import tw.com.vik.model.OrderItem;
+import tw.com.vik.model.Product;
 import tw.com.vik.rowmapper.OrderItemRowMapper;
 import tw.com.vik.rowmapper.OrderRowMapper;
+import tw.com.vik.rowmapper.ProductRowMapper;
 
 @Component
 public class OrderDaoImpl implements OrderDao
@@ -114,5 +118,64 @@ public class OrderDaoImpl implements OrderDao
         List<OrderItem> orderItemList = namedParameterJdbcTemplate.query(sql, map, new OrderItemRowMapper());
         
         return orderItemList;
+    }
+    
+    @Override
+    public List<Order> getOrders(OrderQueryParams orderQueryParams)
+    {
+        String sql = "select order_id, user_id, total_amount, created_date, last_modified_date "
+                + "from `order` where 1=1";
+     
+        Map<String, Object> map = new HashMap<String, Object>();
+        
+        //Where
+        sql = addFiliteringSql(sql, map, orderQueryParams);
+     
+        //排序
+        sql += " order by created_date desc";
+        
+        //分頁(limit、offset)
+        sql = sql + " limit :limit offset :offset";
+        map.put("limit", orderQueryParams.getLimit());
+        map.put("offset", orderQueryParams.getOffset());
+        
+        
+        List<Order> orderList = namedParameterJdbcTemplate.query(sql, map, new OrderRowMapper());
+     
+        return orderList;
+    }
+    
+    @Override
+    public Integer countOrder(OrderQueryParams orderQueryParams)
+    {
+        String sql = "select count(*) from `order` where 1=1";
+        
+        Map<String, Object> map = new HashMap<String, Object>();
+        
+        //Where
+        sql = addFiliteringSql(sql, map, orderQueryParams);
+
+        Integer total = namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
+        
+        return total;
+    }
+    
+    /**
+     * 將WHERE條件功能集中於addFilitering()中
+     * 
+     * @param sql
+     * @param map
+     * @param orderQueryParams
+     * @return
+     */
+    private String addFiliteringSql(String sql, Map<String, Object> map, OrderQueryParams orderQueryParams)
+    {
+        if(orderQueryParams.getUserId() != null)
+        {
+            sql = sql + " AND user_id = :userId";
+            map.put("userId", orderQueryParams.getUserId());
+        }
+        
+        return sql;
     }
 }

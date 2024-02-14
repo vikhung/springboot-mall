@@ -8,15 +8,17 @@ import tw.com.vik.model.Product;
 
 public interface ProductDao
 {
-	Product getProductById(Integer productId);
-	
+    List<Product> getProducts(ProductQueryParams productQueryParams);
+    
+    Product getProductById(Integer productId);
+
+    Integer countProduct(ProductQueryParams productQueryParams);
+
 	Integer createProduct(ProductRequest productRequest);
 	
 	void updateProduct(Integer productId, ProductRequest productRequest);
 	
+	void updateStock(Integer productId, Integer stock);
+	
 	void deleteProduct(Integer productId);
-	
-	List<Product> getProducts(ProductQueryParams productQueryParams);
-	
-	Integer countProduct(ProductQueryParams productQueryParams);
 }
